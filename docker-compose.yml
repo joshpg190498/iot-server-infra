@@ -1,0 +1,76 @@
+version: '3.8'
+services:
+  postgresql:
+    image: postgres:alpine3.20
+    container_name: postgres-db
+    ports: 
+      - "5432:5432"
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    networks:
+      - infra
+    environment:
+      POSTGRES_USER: postgres-sbc-pms
+      POSTGRES_PASSWORD: postgres-sbc-pms
+      POSTGRES_DB: db_sbc_pms
+    restart: always
+
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: mosquitto-server
+    ports:
+      - "1883:1883"
+      - "8883:8883"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./certs:/mosquitto/config/certs
+    networks:
+      - infra
+    restart: always
+  
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    ports:
+      - 2181:2181
+    networks:
+      - infra
+    restart: always      
+    
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+    networks:
+      - infra
+    environemnt:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    restart: always
+  
+  kafka-init:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BROKER: kafka:9092
+      KAFKA_TOPICS: "device-update-events, device-data-events"
+    command: >
+      /bin/sh -c "
+      sleep 30 &&
+      for topic in $(echo ${KAFKA_TOPICS} | tr ',' ' '); do
+        kafka-topics --create --topic \$topic --bootstrap-server ${KAFKA_BROKER} --partitions 1 --replication-factor 1 --if-not-exists;
+      done
+      "
+    networks:
+      - infra
+
+networks:
+  infra:
+    driver: bridge
+
+volumes:
+  postgres-db:
