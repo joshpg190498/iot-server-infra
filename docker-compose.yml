@@ -50,7 +50,7 @@ services:
       - kafka
     command: > # CHANGE WITH YOUR HOST IP
       /bin/sh -c "
-      sleep 10 &&
+      sleep 30 &&
       kafka-topics --create --topic device-update-events --bootstrap-server 192.168.1.210:9092 --partitions 1 --replication-factor 1 --if-not-exists &&
       kafka-topics --create --topic device-data-events --bootstrap-server 192.168.1.210:9092 --partitions 1 --replication-factor 1 --if-not-exists
       "
