@@ -304,15 +304,15 @@ CREATE INDEX idx_threshold_alerts_cooldown_lookup
 
 INSERT INTO PARAMETERS (ID_PARAMETER, DEFAULT_PERIOD, TABLE_POINTER, DESCRIPTION, HAS_THRESHOLD, DEFAULT_THRESHOLD_VALUE) VALUES
 ('main_info', 3600, 'MAIN_DEVICE_INFORMATION', 'Información principal del dispositivo', FALSE, NULL),
-('ram', 30, 'RAM_USAGE', 'Uso de RAM', TRUE, 70),
-('disk', 3600, 'DISK_USAGE', 'Uso de disco', TRUE, 60),
+('ram', 5, 'RAM_USAGE', 'Uso de RAM', TRUE, 70),
+('disk', 1800, 'DISK_USAGE', 'Uso de disco', TRUE, 60),
 ('net_stats', 180, 'NETWORK_STATS', 'Estadísticas de red', FALSE, NULL),
 ('net_info', 600, 'NETWORK_INFORMATION', 'Información de red', FALSE, NULL),
-('cpu_temp', 30, 'CPU_TEMPERATURE', 'Temperatura de la CPU', TRUE, 70),
+('cpu_temp', 5, 'CPU_TEMPERATURE', 'Temperatura de la CPU', TRUE, 70),
 ('uptime', 300, 'UPTIME', 'Tiempo en línea', FALSE, NULL),
-('last_reboot', 1800, 'LAST_REBOOT', 'Último reinicio del dispositivo', FALSE, NULL),
-('cpu_usage', 30, 'CPU_USAGE', 'Uso de CPU', TRUE, 75),
-('load_average', 60, 'LOAD_AVERAGE', 'Promedio de carga', TRUE, 2.0);
+('last_reboot', 3600, 'LAST_REBOOT', 'Último reinicio del dispositivo', FALSE, NULL),
+('cpu_usage', 5, 'CPU_USAGE', 'Uso de CPU', TRUE, 75),
+('load_average', 5, 'LOAD_AVERAGE', 'Promedio de carga', TRUE, 2.0);
 INSERT INTO UPDATE_TYPES (ID_TYPE, DESCRIPTION) VALUES
 ('startup', 'Inicialización del dispositivo'),
 ('update', 'Actualización del dispositivo');
